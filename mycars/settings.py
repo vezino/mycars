@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # My apps
+    'insurances.apps.InsurancesConfig',
+    'drivers.apps.DriversConfig',
+    'vehicle.apps.VehicleConfig',
 ]
 
 MIDDLEWARE = [
@@ -73,12 +77,26 @@ WSGI_APPLICATION = 'mycars.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+DATABASE_USER =  os.environ['DATABASE_USER']
+DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
+DATABASE_MYCARS = os.environ['DATABASE_MYCARS']
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': DATABASE_MYCARS,                      # Or path to database file if using sqlite3.
+            # The following settings are not used with sqlite3:
+            'USER': DATABASE_USER,
+            'PASSWORD': DATABASE_PASSWD,
+            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
     }
-}
 
 
 # Password validation
@@ -118,3 +136,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
