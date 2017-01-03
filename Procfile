@@ -1,0 +1,1 @@
+web: sh -c 'cd mycars && gunicorn mycars.wsgi:application'
