@@ -83,21 +83,25 @@ WSGI_APPLICATION = 'mycars.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASE_USER =  os.environ['DATABASE_USER']
-DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
-DATABASE_MYCARS = os.environ['DATABASE_MYCARS']
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': DATABASE_MYCARS,                      # Or path to database file if using sqlite3.
-            # The following settings are not used with sqlite3:
-            'USER': DATABASE_USER,
-            'PASSWORD': DATABASE_PASSWD,
-            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-            'PORT': '',                      # Set to empty string for default.
-        }
-    }
+#Databse local settings
+# DATABASE_USER =  os.environ['DATABASE_USER']
+# DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
+# DATABASE_MYCARS = os.environ['DATABASE_MYCARS']
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#             'NAME': DATABASE_MYCARS,                      # Or path to database file if using sqlite3.
+#             # The following settings are not used with sqlite3:
+#             'USER': DATABASE_USER,
+#             'PASSWORD': DATABASE_PASSWD,
+#             'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+#             'PORT': '',                      # Set to empty string for default.
+#         }
+#     }
 
+# Database settings
+DATABASE_URL = os.environ['DATABASE_URL']
+DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
