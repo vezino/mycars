@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+# To transform strings from environment variables to boolean values
+import ast
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jhh3(4=)4)r7geu=d2whloyu8a4&_wge&x=+tuz!@qc+sxoa#8'
+#SECRET_KEY = 'jhh3(4=)4)r7geu=d2whloyu8a4&_wge&x=+tuz!@qc+sxoa#8'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,20 +89,26 @@ WSGI_APPLICATION = 'mycars.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+DATABASE_LOCAL =  os.environ['DATABASE_LOCAL']
 DATABASE_USER =  os.environ['DATABASE_USER']
 DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
 DATABASE_MYCARS = os.environ['DATABASE_MYCARS']
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': DATABASE_MYCARS,                      # Or path to database file if using sqlite3.
-            # The following settings are not used with sqlite3:
-            'USER': DATABASE_USER,
-            'PASSWORD': DATABASE_PASSWD,
-            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-            'PORT': '',                      # Set to empty string for default.
+DATABASE_URL = os.environ['DATABASE_URL']
+
+if DATABASE_LOCAL:
+    DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+                'NAME': DATABASE_MYCARS,                      # Or path to database file if using sqlite3.
+                # The following settings are not used with sqlite3:
+                'USER': DATABASE_USER,
+                'PASSWORD': DATABASE_PASSWD,
+                'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+                'PORT': '',                      # Set to empty string for default.
+            }
         }
-    }
+else:
+    DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
 
 
 # Password validation
@@ -137,3 +149,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+FIXTURE_DIRS = (
+   'fixtures/',
+)
