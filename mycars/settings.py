@@ -29,15 +29,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ['DEBUG_STATUS']
 
-PRODUCTION = os.environ['PRODUCTION']
+DEBUG = ast.literal_eval(os.environ['DEBUG_STATUS'])
+
 #ALLOWED_HOSTS = []
+
+# Check if we are in production
+PRODUCTION = ast.literal_eval(os.environ['PRODUCTION'])
+# Change allowed hosts accordingly
 if PRODUCTION:
     ALLOWED_HOSTS = [os.environ['HEROKU_APP_NAME']+".herokuapp.com"]
 else:
-    ALLOWED_HOSTS = [os.environ['ALLOWED_HOSTS']]
-
+    #ALLOWED_HOSTS = [os.environ['ALLOWED_HOSTS']]
+    ALLOWED_HOSTS = []
+    
 
 # Application definition
 
@@ -94,11 +99,11 @@ WSGI_APPLICATION = 'mycars.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASE_LOCAL =  os.environ['DATABASE_LOCAL']
+DATABASE_LOCAL =  ast.literal_eval(os.environ['DATABASE_LOCAL'])
 DATABASE_USER =  os.environ['DATABASE_USER']
 DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
 DATABASE_MYCARS = os.environ['DATABASE_MYCARS']
-DATABASE_URL = os.environ['DATABASE_URL']
+
 
 if DATABASE_LOCAL:
     DATABASES = {
