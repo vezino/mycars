@@ -15,9 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+# Allauth views
+#from allauth.account import views as allauthviews
+from django.contrib.auth import views as auth_views
+# static files
+from django.conf import settings
+from django.conf.urls.static import static
+
+#import allauth
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^insurances/', include('insurances.urls')),
-    url(r'^', include('insurances.urls')),
-]
+    #url(r'^', include('insurances.urls')),
+    #url(r'^accounts/', include('allauth.urls')),
+    #url('^', include('django.contrib.auth.urls'))
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

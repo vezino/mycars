@@ -75,7 +75,8 @@ ROOT_URLCONF = 'mycars.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        #'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -163,6 +164,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATIC_URL = '/static/'
 #ADMIN_MEDIA_PREFIX = '/static/admin/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    '/mycars/static/',
+]
 
 FIXTURE_DIRS = (
    'fixtures/',

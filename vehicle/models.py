@@ -57,7 +57,7 @@ class Vehicle(models.Model):
     related_name='policy',
     verbose_name= "poliza")
   model_name = models.CharField("modelo",max_length=20)
-  make_year = models.CharField("año de fabricacion",max_length=2,default= 0,choices = MODEL_YEAR)
+  make_year = models.CharField("año de fabricacion",max_length=4,default= 0,choices = MODEL_YEAR)
   plate = models.CharField("placa",max_length=10)
   passengers = models.IntegerField('pasajeros',default=4)
   uber_number = models.CharField("numero en UBER",max_length=20)
