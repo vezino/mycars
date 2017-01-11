@@ -77,6 +77,7 @@ class Driver(models.Model):
   # General Driver data
   name = models.CharField("nombre/s",max_length=100)
   last_name = models.CharField("apellidos",max_length=100)
+  photo = models.ImageField("Foto chofer:",upload_to="drivers/",default="")
   email = models.CharField("email",max_length=120,default="")
   birthdate = models.DateTimeField("fecha de nacimiento",default=datetime.now)
   blod_type = models.CharField("tipo de sangre",max_length=1,default= 0,choices = BLOD_TYPE)
@@ -97,8 +98,9 @@ class Driver(models.Model):
   country = models.CharField("pais",max_length=20,default="México")
   # Driver status
   created_at = models.DateTimeField("fecha de alta",default=datetime.now)
-  status = models.CharField("status del chofer",max_length=1,default= 0,choices = STATUS)
-
+  status = models.CharField("status del chofer",max_length=1,default= 0,choices = STATUS)  
+  license_photo_front= models.ImageField("Foto licencia frente",upload_to="drivers/licence",default="",blank=True)
+  license_photo_back = models.ImageField("Foto licencia reverso",upload_to="drivers/license",default="",blank=True)
   class Meta:
     verbose_name_plural = "choferes"
 
