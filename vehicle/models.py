@@ -66,7 +66,7 @@ class Vehicle(models.Model):
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   cylinders = models.IntegerField('cilindros',default=4)
-  fuel_type = models.CharField("tipo de combustible",max_length=2,default= 0,choices = FUEL_TYPE)
+  fuel_type = models.CharField("tipo de combustible",max_length=7,default= 0,choices = FUEL_TYPE)
   class Meta:
     verbose_name_plural = "Vehiculos"
   def __str__(self):
