@@ -11,7 +11,8 @@ import unicodedata
 # Create your models here.
 class Brand(models.Model):
   name = name = models.CharField("marca",max_length=100)
-  created_at = models.DateTimeField("fecha de alta",default=datetime.now)
+  created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
+  last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   class Meta:
     verbose_name_plural = "Marcas"
 
@@ -44,9 +45,9 @@ class Vehicle(models.Model):
     )
   FUEL_TYPE = (
     ("0","Selecciona el tipo de gasolina"),
-    ("1","Magna"),
-    ("2","Premium"),
-    ("2","Disel"),
+    ("Magna","Magna"),
+    ("Premium","Premium"),
+    ("Disel","Disel"),
     )
   brand = models.ForeignKey('Brand',
     on_delete=models.CASCADE,
@@ -62,7 +63,8 @@ class Vehicle(models.Model):
   passengers = models.IntegerField('pasajeros',default=4)
   uber_number = models.CharField("numero en UBER",max_length=20)
   color = models.CharField("color",max_length=20)
-  created_at = models.DateTimeField("fecha de alta",default=datetime.now)
+  created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
+  last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   cylinders = models.IntegerField('cilindros',default=4)
   fuel_type = models.CharField("tipo de combustible",max_length=2,default= 0,choices = FUEL_TYPE)
   class Meta:

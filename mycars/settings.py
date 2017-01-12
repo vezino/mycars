@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'insurances.apps.InsurancesConfig',
     'drivers.apps.DriversConfig',
     'vehicle.apps.VehicleConfig',
+    'traveltag.apps.TraveltagConfig',
 ]
 
 MIDDLEWARE = [
