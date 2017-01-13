@@ -73,6 +73,7 @@ class Vehicle(models.Model):
   def __str__(self):
     return self.brand.name + " " +self.model_name + "(" + self.plate + ")" 
 
+
 class VehicleAssigment(models.Model):
   vehicle = models.ForeignKey(Vehicle,
     on_delete=models.CASCADE,
