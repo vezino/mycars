@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'drivers.apps.DriversConfig',
     'vehicle.apps.VehicleConfig',
     'traveltag.apps.TraveltagConfig',
+    'paymentcard.apps.PaymentcardConfig',
+    'uber.apps.UberConfig',
 ]
 
 MIDDLEWARE = [
