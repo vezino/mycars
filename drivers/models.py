@@ -74,7 +74,7 @@ class Driver(models.Model):
   last_name = models.CharField("apellidos",max_length=100)
   photo = models.ImageField("foto chofer:",upload_to="drivers/",default="")
   email = models.EmailField("email",max_length=254,default="")
-  phone = models.CharField("celular",max_length=10,default="")
+  phone = models.CharField("celular",max_length=11,default="",unique=True)
   birthdate = models.DateField("fecha de nacimiento",default=datetime.now)
   gender = models.CharField("genero",max_length=9,default= 0,choices = GENDER)
   blod_type = models.CharField("tipo de sangre",max_length=3,default= 0,choices = BLOD_TYPE,blank=True)
@@ -101,6 +101,8 @@ class Driver(models.Model):
   license_photo_back = models.ImageField("Foto licencia reverso",upload_to="drivers/license",default="",blank=True)
   class Meta:
     verbose_name_plural = "choferes"
+    ordering = ['last_name','name']
 
   def __str__(self):
     return self.name + " " + self.last_name
+
