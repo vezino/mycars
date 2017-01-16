@@ -6,6 +6,8 @@ from django.db import models
 from datetime import datetime
 from django.utils.encoding import python_2_unicode_compatible
 from drivers import models as models_drivers
+from traveltag import models as models_traveltag
+
 # Unicode 
 import unicodedata
 
@@ -76,12 +78,17 @@ class Vehicle(models.Model):
 class VehicleAssigment(models.Model):
   vehicle = models.ForeignKey(Vehicle,
     on_delete=models.CASCADE,
-    related_name="Vehicle",
+    related_name="vehicleassigment",
     verbose_name= "vehiculo")
   driver = models.ForeignKey(models_drivers.Driver,
     on_delete=models.CASCADE,
     related_name="vehicleassigment",
     verbose_name="chofer")
+  traveltag = models.ForeignKey(models_traveltag.Tagcard,
+    on_delete=models.CASCADE,
+    related_name="vehicleassigment",
+    verbose_name="TAG")
+
   start_at = models.DateTimeField("inicio de la asignacion",default=datetime.now)
   initial_odo = models.FloatField("kilometraje inicial",default=0)
   end_at = models.DateTimeField("fin de la asignacion",default=datetime.now)
