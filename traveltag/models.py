@@ -25,7 +25,7 @@ class Tagcard(models.Model):
     on_delete=models.CASCADE,
     related_name='Tagcompany',
     verbose_name= "Compañia del TAG")
-  card_number = models.CharField("Numero de TAG",max_length=30)
+  card_number = models.CharField("Numero de TAG",max_length=30,unique=True)
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   class Meta:
