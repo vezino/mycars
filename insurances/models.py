@@ -38,11 +38,14 @@ class Policy(models.Model):
   start_at = models.DateTimeField("inicio de vigencia",default=datetime.now)
   end_at = models.DateTimeField("fin vigencia",default=datetime.now)
   price = models.FloatField("costo del seguro",default=0,help_text="costo el seguro")
-  cover_damage = models.FloatField("cobertura daños materiales",default=0)
-  cover_robbery = models.FloatField("cobertura robo",default=0)
-  cover_medic_expense = models.FloatField("cobertura medica",default=0)
-  cover_total = models.FloatField("cobertura total",default=0)
+  # cover data
+  cover_damage = models.CharField("cobertura daños materiales",max_length=250,default="")
+  cover_robbery = models.CharField("cobertura robo",max_length=250,default="")
+  cover_medic_expense = models.CharField("cobertura medica",max_length=250,default="")
+  cover_total = models.CharField("cobertura total",max_length=250,default="")
+  # Cover Type
   cover_type = models.CharField("tipo de cobertura",max_length=20,default= 0,choices = COVER_TYPE)
+  # Change Control
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   phone = models.CharField("numero de la aseguradora",max_length=10,default="",help_text="Indica el número para llamar en caso de un sinisetro, solo numeros")
