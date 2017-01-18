@@ -4,12 +4,17 @@
 from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from drivers import models as models_drivers
 from traveltag import models as models_traveltag
 
 # Unicode 
 import unicodedata
+
+# Validation error stuff
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 class Brand(models.Model):
@@ -76,6 +81,7 @@ class Vehicle(models.Model):
     return self.brand.name + " " +self.model_name + "(" + self.plate + ")" 
 
 class VehicleAssigment(models.Model):
+  # ForeignKey's
   vehicle = models.ForeignKey(Vehicle,
     on_delete=models.CASCADE,
     related_name="vehicleassigment",
@@ -88,15 +94,36 @@ class VehicleAssigment(models.Model):
     on_delete=models.CASCADE,
     related_name="vehicleassigment",
     verbose_name="TAG")
-
+  # Model fields
   start_at = models.DateTimeField("inicio de la asignacion",default=datetime.now)
   initial_odo = models.FloatField("kilometraje inicial",default=0)
   end_at = models.DateTimeField("fin de la asignacion",default=datetime.now)
   final_odo = models.FloatField("kilometraje final",default=0)
+  # Date log
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   class Meta:
-    verbose_name_plural = "Asignaciones de Vehiculo"
+    verbose_name_plural = "Asignaciones de Vehiculo"  
+
   def __str__(self):
-    return self.vehicle.model_name + "( "+ self.vehicle.plate + ") - " + self.driver.name + " " +self.driver.last_name + " " + str(self.start_at)
+    # translate status_vehicle_assigment
+    status="Terminada"
+    if self.status_vehicle_assigment():
+      status = "Actual"
+    return self.vehicle.model_name + " ["+ self.vehicle.plate + "] - Chofrer: " + self.driver.name + " " +self.driver.last_name + " del " + str(self.start_at) + " al " + str(self.end_at) + " - Status Asignacion: " + status
   
+  # Check if assigment date is active.
+  def status_vehicle_assigment(self):
+    if self.end_at > datetime.now(timezone.utc):
+      return True
+    else:
+      return False  
+
+  # Validate clean post data
+  def clean(self, *args, **kwargs):
+    if self.end_at < self.start_at:
+      raise ValidationError(_('Fin la asignacion debe ser mayor que Inicio de la asignacion!'),code='invalid')
+    super(VehicleAssigment, self).save(*args, **kwargs)
+
+
+
