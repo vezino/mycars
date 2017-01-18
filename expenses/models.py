@@ -10,17 +10,25 @@ from vehicle import models as models_vehicle
 # Create your models here.
 @python_2_unicode_compatible
 class Gasexpense(models.Model):
+  FUEL_TYPE = (
+    ("0","Selecciona el tipo de gasolina"),
+    ("Magna","Magna"),
+    ("Premium","Premium"),
+    ("Disel","Disel"),
+    )
   vehicleassigment = models.ForeignKey(models_vehicle.VehicleAssigment,
     on_delete=models.CASCADE,
     related_name="vehicleassigment",
     verbose_name= "vehiculo asignado")
   odo = models.FloatField("kilometraje al momento de la carga",default=0)
   odo_picture = models.ImageField("foto de odometro",upload_to="expense/gas_odo/",default="")
+  fuel_type = models.CharField("tipo de combustible",max_length=7,default= "",choices = FUEL_TYPE)
   gas_price = models.FloatField("precio x litro",default=0)
   gas_liters = models.FloatField("litros cargados",default=0)
   gas_total = models.FloatField("importe en pesos",default=0)
   ticket_picture = models.ImageField("foto del ticket",upload_to="expense/gas_ticket/",default="",blank=True)
   date_load = models.DateTimeField("fecha de carga",default=datetime.now)
+
   # Date log
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
