@@ -10,7 +10,7 @@ from django.utils.encoding import python_2_unicode_compatible
 # Unicode shite
 import unicodedata
 
-# Validation stuff
+# Validation error stuff
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
@@ -67,7 +67,7 @@ class Policy(models.Model):
     else:
       return False
 
-  #Validate end_at to be greater then start_at
+  #Validate end_at to be greater then start_at on submit data
   def clean(self, *args, **kwargs):
     if self.end_at < self.start_at:
       raise ValidationError(_('Fin de vigencia debe ser mayor que Inicio de vigencia!'),code='invalid')
