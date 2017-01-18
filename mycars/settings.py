@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'traveltag.apps.TraveltagConfig',
     'paymentcard.apps.PaymentcardConfig',
     'uber.apps.UberConfig',
+    'expenses.apps.ExpensesConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # auto localization
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'mycars.urls'
