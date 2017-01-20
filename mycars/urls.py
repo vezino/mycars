@@ -17,15 +17,22 @@ from django.conf.urls import include, url
 from django.contrib import admin
 # Allauth views
 #from allauth.account import views as allauthviews
-from django.contrib.auth import views as auth_views
+#from django.contrib.auth import views as auth_views
+
 # static files
 from django.conf import settings
 from django.conf.urls.static import static
+# Login sutuff
+from loginu.forms import LoginForm
+from django.contrib.auth import views
 
 #import allauth
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'', include('loginu.urls')),
+    url(r'^login/$', views.login, {'template_name': 'login.html', 'authentication_form': LoginForm}, name='login'),
+    url(r'^logout/$', views.logout, {'next_page': '/login'}),
     url(r'^insurances/', include('insurances.urls')),
     #url(r'^', include('insurances.urls')),
     #url(r'^accounts/', include('allauth.urls')),
