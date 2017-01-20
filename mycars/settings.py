@@ -47,6 +47,9 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    # Bootstrap admin
+    'bootstrap_admin',
+    # Default django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,6 +64,8 @@ INSTALLED_APPS = [
     'paymentcard.apps.PaymentcardConfig',
     'uber.apps.UberConfig',
     'expenses.apps.ExpensesConfig',
+    # Font Awsome
+    'fontawesome',
 ]
 
 MIDDLEWARE = [
@@ -108,6 +113,8 @@ WSGI_APPLICATION = 'mycars.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+# bootstrap admin
+BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
 DATABASE_LOCAL =  ast.literal_eval(os.environ['DATABASE_LOCAL'])
 DATABASE_USER =  os.environ['DATABASE_USER']
 DATABASE_PASSWD = os.environ['DATABASE_PASSWD']
@@ -162,6 +169,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Login stuff:
+LOGIN_REDIRECT_URL = '/' # It means home view
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
