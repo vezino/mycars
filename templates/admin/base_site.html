@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% load fontawesome %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('MyCars site admin') }}{% endblock %}
+
+{% block branding %}
+<!-- <a href="{% url 'admin:index' %}">{{ site_header|default:_('MyCars administration') }}</a>
+-->
+<head>
+  {% fontawesome_stylesheet %}
+</head>
+<h2 id="site-name">
+  <a href="{% url 'admin:index' %}"><span class="glyphicon glyphicon-home" style="color:'black;'"> MyCars</span></a>
+ {% fontawesome_icon 'car' color="black" large=True spin=False %}
+</h2>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
