@@ -12,7 +12,7 @@ def index(request):
     return HttpResponse("Hello, world. We are in development please go to admin to add catalog information.")
 
 #@login_required(login_url="/login/")
-class LandingView(CreateView):
+class LandingView(View):
   template_name = 'site_base.html'
   def get(self, request, *args, **kwargs):
     return render(request, self.template_name)
