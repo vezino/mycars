@@ -18,7 +18,7 @@ class UberData(models.Model):
   trip_type = models.CharField(max_length=200,default= "",choices = TRIP_TYPE)
   trip_date = models.DateTimeField(default=datetime.now)
   description = models.TextField(max_length=200,default= "",blank=True)
-  trip_number = models.CharField(max_length=40,default= "",unique=True)
+  trip_number = models.CharField(max_length=40,default= "",primary_key=True,unique=True)
   fare = models.FloatField(default=0)
   surge = models.FloatField(default=0,blank=True)
   toll = models.FloatField(default=0,blank=True)
