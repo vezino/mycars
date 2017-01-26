@@ -17,6 +17,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
+@python_2_unicode_compatible
 class Brand(models.Model):
   name = name = models.CharField("marca",max_length=100)
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
@@ -27,6 +28,7 @@ class Brand(models.Model):
   def __str__(self):
     return self.name
 
+@python_2_unicode_compatible
 class Vehicle(models.Model):
   MODEL_YEAR = (
     ("2006","2006"),
@@ -80,6 +82,7 @@ class Vehicle(models.Model):
   def __str__(self):
     return self.brand.name + " " +self.model_name + "(" + self.plate + ")" 
 
+@python_2_unicode_compatible
 class VehicleAssigment(models.Model):
   # ForeignKey's
   vehicle = models.ForeignKey(Vehicle,
