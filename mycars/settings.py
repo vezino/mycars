@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'paymentcard.apps.PaymentcardConfig',
     'uber.apps.UberConfig',
     'expenses.apps.ExpensesConfig',
+    'maintenance.apps.MaintenanceConfig',
     # Font Awsome
     'fontawesome',
 ]
