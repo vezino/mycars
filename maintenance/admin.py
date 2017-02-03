@@ -31,4 +31,4 @@ class ServiceOrderAdmin(admin.ModelAdmin):
 admin.site.register(ServiceOrder,ServiceOrderAdmin)
 admin.site.register(ServiceConcept)
 admin.site.register(ServiceItem)  
-admin.site.register(ServiceItemPrice)  
+#admin.site.register(ServiceItemPrice)  
