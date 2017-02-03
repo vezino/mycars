@@ -38,6 +38,7 @@ class Policy(models.Model):
   start_at = models.DateTimeField("inicio de vigencia",default=datetime.now)
   end_at = models.DateTimeField("fin vigencia",default=datetime.now)
   price = models.FloatField("costo del seguro",default=0,help_text="costo el seguro")
+  image = models.ImageField("foto poliza:",upload_to="insurances/",default="")
   # cover data
   cover_damage = models.CharField("cobertura daños materiales",max_length=250,default="")
   cover_robbery = models.CharField("cobertura robo",max_length=250,default="")
