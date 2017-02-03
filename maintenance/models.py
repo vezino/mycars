@@ -51,12 +51,14 @@ class ServiceItemPrice(models.Model):
     on_delete=models.CASCADE,
     related_name='ServiceItemPrice',
     verbose_name= "Trabajo")
-  spare_parts = models.FloatField("precio refacciones",default=0)
-  workforce = models.FloatField("mano de obra",default=0)
+  #spare_parts = models.FloatField("precio refacciones",default=0)
+  #workforce = models.FloatField("mano de obra",default=0)
   class Meta:
     verbose_name_plural = "importe del trabajo"
   def __str__(self):
-    return str(self.service_item) + ' [Refacciones: ($ ' + str(self.spare_parts) + ')' + ' ]'
+    #return str(self.service_item) + ' [Refacciones: ($ ' + str(self.spare_parts) + ')' + ' ]'
+    return str(self.service_item)
+
 
 @python_2_unicode_compatible
 class ServiceOrder(models.Model):
@@ -82,7 +84,7 @@ class ServiceOrder(models.Model):
   crystals = models.NullBooleanField("cristales")
   wheel_covers = models.NullBooleanField("tapones")
   gas_cap = models.NullBooleanField("tapon de gasolina")
-  #serviceitemprice = models.ForeignKey('Price',on_delete=models.CASCADE,verbose_name= 'reparacion')
+  comments = models.TextField("observaciones",default="",blank=True)  
   # Date log
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
@@ -95,10 +97,21 @@ class ServiceOrder(models.Model):
 
 
 class ServiceOrderTotal(models.Model):
-  service_order = models.ForeignKey(ServiceOrder, on_delete=models.CASCADE,verbose_name="Orden de Servicio")
+  service_order_detail = models.ForeignKey(ServiceOrder, on_delete=models.CASCADE,verbose_name="Orden de Servicio")
   #ServiceItemPrice
-  service_item_price = models.ForeignKey(ServiceItemPrice, on_delete=models.CASCADE,verbose_name="Descripcion del trabajo")
-  # spare_parts = models.FloatField("precio refacciones",default=0)
-  # workforce = models.FloatField("mano de obra",default=0)
+  service_item = models.ForeignKey(ServiceItem, on_delete=models.CASCADE,verbose_name="Descripcion del trabajo")
+  spare_parts = models.FloatField("precio refacciones",default=0)
+  workforce = models.FloatField("mano de obra",default=0)
+  item_total = models.FloatField("total",default=0)
+
+
+  # Date log
+  created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
+  last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
+
+
   class Meta:
     verbose_name_plural = "Trabajos Realizados"
+
+
+
