@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^login/$', views.login, {'template_name': 'login.html', 'authentication_form': LoginForm}, name='login'),
     url(r'^logout/$', views.logout, {'next_page': '/login'}),
     url(r'^insurances/', include('insurances.urls')),
+    url(r'^reports/', include('reports.urls')),
     #url(r'^', include('insurances.urls')),
     #url(r'^accounts/', include('allauth.urls')),
     #url('^', include('django.contrib.auth.urls'))

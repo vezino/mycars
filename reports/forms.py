@@ -10,24 +10,36 @@ import pytz
 
 # DATES form
 class DateSelector(forms.Form):
-    # Read current UTC datetime
-    utc = pytz.utc.localize(datetime.datetime.utcnow())
-    # Set users time zone
-    instance_time_zone = pytz.timezone('America/Mexico_City')
-    # Convert current UTC to user tome zone
-    utc_mx = utc.astimezone(instance_time_zone)
+  # Read current UTC datetime
+  utc = pytz.utc.localize(datetime.datetime.utcnow())
+  # Set users time zone
+  instance_time_zone = pytz.timezone('America/Mexico_City')
+  # Convert current UTC to user tome zone
+  utc_mx = utc.astimezone(instance_time_zone)
 
-    from_date = forms.DateField(
-        required=True,
-        label='Desde:',
-        initial=date(utc_mx.year, 1, 1),
-        widget=extras.SelectDateWidget(
-                years=range(2016, 2018)
-            ))
-    until_date = forms.DateField(
-        required=True,
-        label='Hasta:',
-        initial=date(utc_mx.year,utc_mx.month,utc_mx.day),
-        widget=extras.SelectDateWidget(
-                years=range(2016, 2018)
-            ))
+  from_date = forms.DateField(
+      required=True,
+      label='Desde:',
+      initial=date(utc_mx.year, 1, 1),
+      widget=extras.SelectDateWidget(
+              years=range(2014, 2020)
+          ))
+  until_date = forms.DateField(
+      required=True,
+      label='Hasta:',
+      initial=date(utc_mx.year,utc_mx.month,utc_mx.day),
+      widget=extras.SelectDateWidget(
+              years=range(2014, 2020)
+          ))
+
+REPORT_YEARS = (
+  (2015,"2015"),
+  (2016,"2016"),
+  (2017,"2017"),
+  (2018,"2018"),
+  )
+
+class YearSelector(forms.Form):
+  #report_year = forms.DateField(widget=forms.SelectDateWidget(years=REPORT_YEARS))  
+  report_year = forms.ChoiceField(widget=forms.Select, choices = REPORT_YEARS)
+
