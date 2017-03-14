@@ -20,7 +20,8 @@ class ServiceOrderAdmin(admin.ModelAdmin):
   fieldsets = [
   (None,               {'fields': ['vehicle','date','reception','delivery']}),
   ('Inventario',       {'fields': ['radio','floor_mats','lighter','extinguisher','hydraulic_jack','tools','wheel_brace','spare_tire','oil_cap','radiator_cap','dipstick','antenna','mirrors','crystals','wheel_covers','gas_cap'], 'classes': ['collapse']}),
-  ('Observaciones',       {'fields': ['comments'], 'classes': ['collapse']}),
+  ('Observaciones',     {'fields': ['comments'], 'classes': ['collapse']}),
+  ('Totals',            {'fields': ['total_amount','tax_amount','total_final']}),
   ]
   inlines = [PriceInline]
   list_display = ('vehicle','date')

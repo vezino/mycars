@@ -84,7 +84,10 @@ class ServiceOrder(models.Model):
   crystals = models.NullBooleanField("cristales")
   wheel_covers = models.NullBooleanField("tapones")
   gas_cap = models.NullBooleanField("tapon de gasolina")
-  comments = models.TextField("observaciones",default="",blank=True)  
+  comments = models.TextField("observaciones",default="",blank=True)
+  total_amount = models.FloatField("total de la reparacion",default=0)
+  tax_amount =  models.FloatField("iva",default=0)
+  total_final = models.FloatField("total con iva",default=0)
   # Date log
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
