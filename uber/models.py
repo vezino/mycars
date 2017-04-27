@@ -85,10 +85,29 @@ class VMycarsIncomeByYearMonth(models.Model):
   class Meta:
     verbose_name_plural = "Year Month Uber Data"
     ordering = ['trip_year']
+    db_table = 'vmycarsincomebyyearmonth'
     managed = False
 
   def __str__(self):  
     return str(self.trip_year) + " ( " + str(self.trip_month) + " )"  
+
+
+class UploadUberData(models.Model):
+  name = models.CharField("nombre de la carga",max_length=100,unique=True)
+  file_procesed = models.NullBooleanField("Procesado",default=False)
+  uber_file_uploaded = models.FileField("archivo de datos de uber",max_length=100,upload_to="uber/uberfiles",default="")
+  created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
+  last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
+  class Meta:
+    verbose_name_plural = "Uber Data Load"
+    ordering = ['created_at']
+
+
+  def __str__(self):  
+    return self.name
+
+
+
 
 
 

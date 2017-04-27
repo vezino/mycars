@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+	<div style="padding-top:55px">
+		<h1> Upload Uber Data File 2</h1>
+		  {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+              {% endfor %}
+            </ul>
+          {% endif %}
+		<form action="" method="post">
+			{% csrf_token %}
+    		{{ form.as_p }}
+    		<input type="submit" value="Save" />
+		</form>
+	</div>	
+</div>
+
+{% endblock %}

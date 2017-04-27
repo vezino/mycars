@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+	<div style="padding-top:25px">
+		<h1> Uber uploaded Files</h1>
+		<ul>
+			{% for uploadfile in object_list %}
+				<li> {{ uploadfile.name }}</li>
+			{% empty %}
+				<li> There is no fieles to process</li>
+			{% endfor %}	
+		</ul>
+	</div>	
+</div>
+
+{% endblock %}
