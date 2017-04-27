@@ -21,7 +21,7 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 @python_2_unicode_compatible
 class Brand(models.Model):
-  name = name = models.CharField("marca",max_length=100)
+  name = models.CharField("marca",max_length=100)
   created_at = models.DateTimeField("fecha de alta",auto_now_add=True,editable=False)
   last_modified = models.DateTimeField("ultima modificacion",auto_now=True,editable=False)
   class Meta:
