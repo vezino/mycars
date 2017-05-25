@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+
+<!-- <div class="container">
+	<div class="row row-content">
+    <div style="padding-top:25px">
+      <div class="jumbotron">
+        <h1 >Hello</h1>
+        <p>You are on Report Dashboard</p>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="container">
+   <div style="padding-top:25px">
+      <div class="page-header">
+          <h1>Uber Performance by Driver / Trips</h1>
+          {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+              {% endfor %}
+            </ul>
+          {% endif %}
+      </div>
+   </div>
+</div>
+
+<div class="container">
+  <div class="row row-content">
+    <div class="col-sm-2">
+      <h3>Filter:</h3>
+        <form action='/reports/driver/' method="post" style='text-align: left;' >
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input class="btn btn-info" type="submit" value="Actualizar Gráfica" />
+          <input type="hidden" value="{{ template }}" name='template'>
+        </form>
+    </div>
+    <div class="col-sm-10">
+      <div id='ovvw_chart_div' class="graph-big"> </div>
+    </div>
+    
+  </div>
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src = "{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
+
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['line','corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable(
+      {{data|safe}}
+    );
+
+    // var cols = parseInt(data.getNumberOfColumns()-2);
+
+    // var options = {
+    //   title : 'Numero de recetas por sucursal por mes',
+    //   vAxis: {title: 'Vertical'},
+    //   hAxis: {title: 'Horizontal'},
+    //   seriesType: 'bars',
+    //   series: {}
+    // };
+
+    // // Dynamically change the last part of the graph
+    // options.series[cols] = {type: 'line'}
+    var options = {
+              //title: 'Company Performance',
+              curveType: 'function',
+              legend: { position: 'bottom' },
+              height: 600,
+              //width: 1400,
+              // Material View
+              series: {
+                // Gives each series an axis name that matches the Y-axis below.
+                0: {axis: 'Viajes'},
+                1: {axis: 'Total Payment'}
+              },
+              axes: {
+                // Adds labels to each axis; they don't have to match the axis names.
+                y: {
+                  Temps: {label: 'Temps (Celsius)'},
+                  Daylight: {label: 'Daylight'}
+                }
+              }
+
+              // Clasic View
+            //   series: {
+            //     0: {targetAxisIndex: 0},
+            //     1: {targetAxisIndex: 1}
+            //   },
+            //   vAxes: {
+            //     // Adds titles to each axis.
+            //     0: {title: 'Travels'},
+            //     1: {title: 'Total Payment'}
+            //   },        
+
+            };
+
+
+    var chart = new google.charts.Line(document.getElementById('ovvw_chart_div'));
+       chart.draw(data, options);
+
+    //var chart = new google.visualization.Line(document.getElementById('ovvw_chart_div'));
+    //chart.draw(data, options);
+    // var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    //   chart.draw(data, options);
+}
+   
+</script>
+
+
+
+{% endblock %}

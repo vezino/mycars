@@ -6,21 +6,24 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View, CreateView, ListView
 import unicodedata
-from reports.forms import DateSelector, YearSelector
-
+from reports.forms import DateSelector, YearSelector, MonthYearSelector
+from django.db.models import Count, Avg
 #Date
 from datetime import date, timedelta, datetime
 import datetime
 import calendar
 from django.utils import timezone
 import pytz
+from collections import defaultdict
 
 # Parsing
 import ast
 
 # Model
-from uber.models import VMycarsIncomeByYearMonth
-
+from uber.models import VMycarsIncomeByYearMonth, VMyCarsIncomeByDriverYearMonthWeek, VMycarsFilterDriverMonthYear
+# Panda
+from django_pandas.io import read_frame
+import json
 
 
 #Add TIME_ZONE constant to use in get_utc method
@@ -107,6 +110,139 @@ class Dashbord(View):
     #form = DateSelector()
     print income
     return render(request, self.template_name,{"data":income, "form": form,})
+
+
+class DriversTripReport(View):
+  template_name = 'DriversTripReport.html'
+  def get(self, request, *args, **kwargs):
+    form = MonthYearSelector()
+    # Get initial dates
+    start_dates = initialize_dates()
+    start_date = start_dates[0]
+    end_date = start_dates[1]
+    # Define columns to Retrive
+    select_columns = ['date','phone_number','viajes']
+    # Define Pivot definition
+    pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'viajes'}
+    # Get data
+    income = GetDriverTripsData(end_date.year,end_date.month,select_columns,pivot_def)
+    stats = GetDriverTripStats(end_date.year,end_date.month,select_columns,pivot_def)
+   
+    #print income
+    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+
+  def post(self, request, *args, **kwargs):
+    form = MonthYearSelector(request.POST)
+    select_columns = ['date','phone_number','viajes']
+    pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'viajes'}    
+    if form.is_valid():
+      income = GetDriverTripsData(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
+      stats = GetDriverTripStats(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
+    #return render(request, self.template_name,{"data":income, "form": form,})
+    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+
+class DriversPaymentReport(View):
+  template_name = 'DriversPaymentReport.html'
+  def get(self, request, *args, **kwargs):
+    form = MonthYearSelector()
+    # Get initial dates
+    start_dates = initialize_dates()
+    start_date = start_dates[0]
+    end_date = start_dates[1]
+    # Define columns to Retrive
+    select_columns = ['date','phone_number','total_payment']
+    # Define Pivot definition
+    pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'total_payment'}
+    # Get data
+    income = GetDriverTripsData(end_date.year,end_date.month,select_columns,pivot_def)
+    stats = GetDriverTripStats(end_date.year,end_date.month,select_columns,pivot_def)
+   
+    #print income
+    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+
+  def post(self, request, *args, **kwargs):
+    form = MonthYearSelector(request.POST)
+    select_columns = ['date','phone_number','total_payment']
+    pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'total_payment'}    
+    if form.is_valid():
+      income = GetDriverTripsData(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
+      stats = GetDriverTripStats(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
+    #return render(request, self.template_name,{"data":income, "form": form,})
+    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+
+# Get data from 
+def GetDriverTripsData(year,month,select_columns,pivot_def):
+  #template_name = 'dashbord.html'
+  # Define QuerySet:
+  qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(year=year,month=month)
+  print qs.count()
+  if qs.count() != 0:
+    # Read DataFranme and select columns to use
+    #df = read_frame(qs,fieldnames=['date','phone_number','viajes'])
+    df = read_frame(qs,fieldnames=select_columns)
+    # Pivot data
+    #df = df.pivot(index='date',columns='phone_number',values='viajes')
+    df = df.pivot(index=pivot_def['index'],columns=pivot_def['columns'],values=pivot_def['values'])
+    # Convert nan to 0
+    df1 = df.fillna(value=0)
+    #df2 = df.describe()
+    # Get Statistics
+    df2 = df.describe()
+    print df.describe()
+    #print df2
+    # Convert DataFrame to json
+    json_data = df1.to_json(orient="split")  
+    return TranslateJSONResults(json_data,'Date')
+  else:
+    print date.today()
+    null_data = [['Date','No Data'],[str(date.today()),'0']]
+    return null_data
+
+# Get Stats from data
+def GetDriverTripStats(year,month,select_columns,pivot_def):
+  # Define Queryset
+  qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(year=year,month=month)
+  print qs.count()
+  if qs.count() != 0:
+    # Read DataFranme and select columns to use
+    #df = read_frame(qs,fieldnames=['date','phone_number','viajes'])
+    df = read_frame(qs,fieldnames=select_columns)
+    # Pivot data
+    #df = df.pivot(index='date',columns='phone_number',values='viajes')
+    df = df.pivot(index=pivot_def['index'],columns=pivot_def['columns'],values=pivot_def['values'])
+    # Convert nan to 0
+    df1 = df.fillna(value=0)
+    #df2 = df.describe()
+    # Get Statistics
+    df2 = df.describe()
+    df2 = df2.fillna(value=0)
+    stat_json = df2.to_json(orient="split")
+    print stat_json
+    return TranslateJSONResults(stat_json,'Indicador')
+  else:
+      null_data = [['Indicador','No Data'],[str(date.today()),'0']]
+      return null_data  
+     
+# Convert json data to list
+def TranslateJSONResults(json_data,extra_column):
+  # Converty json to valid dict  
+  json_dict = ast.literal_eval(json_data)
+  # Separete Lists
+  data_columns = json_dict['columns']
+  data_index = json_dict['index']
+  data_data = json_dict['data']
+  # Insert Missing Date Header to columns
+  data_columns.insert(0,extra_column)
+  # Insert Index Date to Value
+  results = []
+  results.append(data_columns)
+  for i,date in enumerate(data_index):
+    data_data[i].insert(0,date)
+  # Merge Header and data
+  merged_data =  results + data_data
+  # Return list 
+  return merged_data
+
 
 
 
