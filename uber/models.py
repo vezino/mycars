@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
 from django.utils.encoding import python_2_unicode_compatible
+from django_pandas.managers import DataFrameManager
 # Unicode 
 import unicodedata
 # Create your models here.
@@ -31,6 +32,8 @@ class UberData(models.Model):
   commission = models.FloatField(default=0)
   tax_on_fee = models.FloatField(default=0,blank=True)
   total_payment = models.FloatField(default=0)
+  # Pandas requirment
+  objects = DataFrameManager()
   class Meta:
     verbose_name_plural = "Uber Data"
     ordering = ['trip_date']
@@ -91,7 +94,7 @@ class VMycarsIncomeByYearMonth(models.Model):
   def __str__(self):  
     return str(self.trip_year) + " ( " + str(self.trip_month) + " )"  
 
-
+@python_2_unicode_compatible
 class UploadUberData(models.Model):
   name = models.CharField("nombre de la carga",max_length=100,unique=True)
   file_procesed = models.NullBooleanField("Procesado",default=False)
@@ -105,6 +108,52 @@ class UploadUberData(models.Model):
 
   def __str__(self):  
     return self.name
+
+@python_2_unicode_compatible
+class VMyCarsIncomeByDriverYearMonthWeek(models.Model):
+  id_date_driver = models.CharField(primary_key=True,max_length=20,default="")
+  date = models.CharField(max_length=10,default="")
+  year = models.IntegerField(default=0)
+  month = models.IntegerField(default=0)
+  week = models.IntegerField(default=0)
+  quarter = models.IntegerField(default=0)
+  phone_number = models.CharField(max_length=12,default=0)
+  viajes = models.IntegerField(default=0)
+  fare = models.FloatField(default=0)
+  surge = models.FloatField(default=0)
+  toll = models.FloatField(default=0)
+  misc = models.FloatField(default=0)
+  other = models.FloatField(default=0)
+  meter_rate = models.FloatField(default=0)
+  gratuity = models.FloatField(default=0)
+  commission = models.FloatField(default=0)
+  tax_on_fee = models.FloatField(default=0)
+  total_payment = models.FloatField(default=0)
+  class Meta:
+    verbose_name_plural = "Uber Driver Data"
+    ordering = ['phone_number']
+    db_table = 'vmycarsincomebydriverdayyear'
+    managed = False
+
+  def __str__(self):  
+    return self.phone_number
+
+@python_2_unicode_compatible
+class VMycarsFilterDriverMonthYear(models.Model):
+  id_date_driver = models.CharField(primary_key=True,max_length=20,default="")
+  phone_number = models.CharField(max_length=12,default=0)
+  year = models.IntegerField(default=0)
+  month = models.IntegerField(default=0)
+  class Meta:
+    verbose_name_plural = "Uber Driver Filter"
+    ordering = ['phone_number']
+    db_table = 'vmycarsfilterdrivermonthyear'
+    managed = False
+
+  def __str__(self):  
+    return self.phone_number
+
+
 
 
 
