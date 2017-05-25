@@ -43,16 +43,31 @@
     </div>
     <div class="col-sm-10">
       <div id='ovvw_chart_div' class="graph-big"> </div>
-    </div>
-    
+    </div>    
   </div>
+
+  <div class="row row-content">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <div id='ovvw_table_div_1' class=""> </div>
+    </div>
+  </div>  
+
   <div class="row row-content">
     <div class="col-sm-2">Vacio</div>
     <div class="col-sm-10">
-      <div id='ovvw_chart_div' class="graph-big"> </div>
+      <div id='ovvw_chart_div_1' class="graph-big"> </div>
     </div>
-
   </div>
+
+  <div class="row row-content">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <div id='ovvw_table_div' class=""> </div>
+    </div>
+  </div> 
+ 
+
 </div>
 
 
@@ -60,7 +75,7 @@
 <script src = "{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
 
 <script type="text/javascript">
-  google.charts.load('current', {'packages':['line','corechart']});
+  google.charts.load('current', {'packages':['line','corechart','bar','table']});
   google.charts.setOnLoadCallback(drawChart);
 
   function drawChart() {
@@ -68,18 +83,10 @@
       {{data|safe}}
     );
 
-    // var cols = parseInt(data.getNumberOfColumns()-2);
+    var data1 = google.visualization.arrayToDataTable(
+      {{stats|safe}}
+    );
 
-    // var options = {
-    //   title : 'Numero de recetas por sucursal por mes',
-    //   vAxis: {title: 'Vertical'},
-    //   hAxis: {title: 'Horizontal'},
-    //   seriesType: 'bars',
-    //   series: {}
-    // };
-
-    // // Dynamically change the last part of the graph
-    // options.series[cols] = {type: 'line'}
     var options = {
               //title: 'Company Performance',
               curveType: 'function',
@@ -98,29 +105,63 @@
                   Temps: {label: 'Temps (Celsius)'},
                   Daylight: {label: 'Daylight'}
                 }
-              }
-
-              // Clasic View
-            //   series: {
-            //     0: {targetAxisIndex: 0},
-            //     1: {targetAxisIndex: 1}
-            //   },
-            //   vAxes: {
-            //     // Adds titles to each axis.
-            //     0: {title: 'Travels'},
-            //     1: {title: 'Total Payment'}
-            //   },        
+              }       
 
             };
 
+    var options1 = {
+              title: 'Statistics',
+              curveType: 'function',
+              legend: { position: 'bottom' },
+              height: 800,
+              width: 1200,
+              // Material View
+              series: {
+                // Gives each series an axis name that matches the Y-axis below.
+                0: {axis: 'Viajes'},
+                1: {axis: 'Total Payment'}
+              },
+              axes: {
+                // Adds labels to each axis; they don't have to match the axis names.
+                y: {
+                  Temps: {label: 'Temps (Celsius)'},
+                  Daylight: {label: 'Daylight'}
+                }
+              }      
+
+            };
+
+    var materialOptions = {
+          width: 1200,
+          height: 800,
+          chart: {
+            title: 'Driver Trip Statistics',
+            subtitle: 'distance on the left, brightness on the right'
+          },
+          series: {
+            0: { axis: 'distance' }, // Bind series 0 to an axis named 'distance'.
+            1: { axis: 'brightness' } // Bind series 1 to an axis named 'brightness'.
+          },
+          axes: {
+            y: {
+              distance: {label: 'Trips'}, // Left y-axis.
+              brightness: {side: 'right', label: 'Trips'} // Right y-axis.
+            }
+          }
+        };
 
     var chart = new google.charts.Line(document.getElementById('ovvw_chart_div'));
        chart.draw(data, options);
 
-    //var chart = new google.visualization.Line(document.getElementById('ovvw_chart_div'));
-    //chart.draw(data, options);
-    // var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-    //   chart.draw(data, options);
+    var materialChart = new google.charts.Bar(document.getElementById('ovvw_chart_div_1'));
+          materialChart.draw(data1, google.charts.Bar.convertOptions(materialOptions)); 
+
+    var table = new google.visualization.Table(document.getElementById('ovvw_table_div'));
+        table.draw(data1, {showRowNumber: true, width: '100%', height: '100%'});
+
+    var table = new google.visualization.Table(document.getElementById('ovvw_table_div_1'));
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+
 }
    
 </script>
