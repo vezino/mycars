@@ -15,21 +15,27 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
         <ul class="nav navbar-nav">
-          <li class="active">
+          <li >
             <a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
           </li>
         </ul>
 
         <ul class="nav navbar-nav">
-          <li class="active">
+          <li>
             <a href="/uber/"><span class="fa fa-cloud-upload" aria-hidden="true"></span> Uber</a>
           </li>
         </ul>
 
 
         <ul class="nav navbar-nav">
-          <li class="active">
-            <a href="/reports/"><span class="fa fa-bar-chart" aria-hidden="true"></span> Reports</a>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Reports
+            <span class="caret"></span></a>
+            <ul class= "dropdown-menu">
+              <li><a href="/reports/">Dashbord</a></li>
+              <li><a href="/reports/driver/">Driver / Trips Analisis</a></li>
+              <li><a href="/reports/payment/">Driver / Payment Analisis</a></li>
+            </ul>
           </li>
         </ul>
 
