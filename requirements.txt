@@ -10,3 +10,7 @@ django_storages==1.5.2
 boto==2.45.0
 django-apptemplates==1.2
 pytz==2015.4
+python-dateutil==2.6.0
+numpy==1.12.1
+pandas==0.20.1
+django-pandas==0.4.2
