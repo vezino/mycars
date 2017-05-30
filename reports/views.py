@@ -24,7 +24,8 @@ from uber.models import VMycarsIncomeByYearMonth, VMyCarsIncomeByDriverYearMonth
 # Panda
 from django_pandas.io import read_frame
 import json
-
+#import numpy
+import numpy as np
 
 #Add TIME_ZONE constant to use in get_utc method
 TIME_ZONE = "America/Mexico_City"
@@ -51,11 +52,11 @@ def add_months(sourcedate, months):
   return datetime.date(year,month,day)
 
 # Get intial date array for all queries
-def initialize_dates():
+def initialize_dates(months_before):
    # Called to get_utc method
     utc_mx = get_utc()
 
-    start_date = add_months(utc_mx, -12)
+    start_date = add_months(utc_mx, months_before)
     end_date = date(utc_mx.year,utc_mx.month,utc_mx.day)
     return [datetime.date(start_date.year,start_date.month,1), end_date]
 
@@ -115,66 +116,78 @@ class Dashbord(View):
 class DriversTripReport(View):
   template_name = 'DriversTripReport.html'
   def get(self, request, *args, **kwargs):
-    form = MonthYearSelector()
+    #form = MonthYearSelector()
+    form = DateSelector()
     # Get initial dates
-    start_dates = initialize_dates()
+    start_dates = initialize_dates(-5)
     start_date = start_dates[0]
     end_date = start_dates[1]
+    print start_dates
+    print start_date
+    print end_date
     # Define columns to Retrive
     select_columns = ['date','phone_number','viajes']
     # Define Pivot definition
     pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'viajes'}
     # Get data
-    income = GetDriverTripsData(end_date.year,end_date.month,select_columns,pivot_def)
-    stats = GetDriverTripStats(end_date.year,end_date.month,select_columns,pivot_def)
+    #income = GetDriverTripsData(start_date,end_date,select_columns,pivot_def)
+    #stats = GetDriverTripStats(start_date,end_date,select_columns,pivot_def)
    
     #print income
-    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+    #return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+    results = GetDriverTripsData(start_date,end_date,select_columns,pivot_def)
+
+    return render(request, self.template_name,{"data":results['data'],"stats":results['stats'], 'sums':results['sums'],'totals':results['totals'],"form": form,})
+
 
   def post(self, request, *args, **kwargs):
-    form = MonthYearSelector(request.POST)
+    #form = MonthYearSelector(request.POST)
+    form = DateSelector(request.POST)
     select_columns = ['date','phone_number','viajes']
     pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'viajes'}    
     if form.is_valid():
-      income = GetDriverTripsData(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
-      stats = GetDriverTripStats(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
-    #return render(request, self.template_name,{"data":income, "form": form,})
-    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+    #   income = GetDriverTripsData(form.cleaned_data['from_date'],form.cleaned_data['until_date'],select_columns,pivot_def)
+    #   stats = GetDriverTripStats(form.cleaned_data['from_date'],form.cleaned_data['until_date'],select_columns,pivot_def)
+    # #return render(request, self.template_name,{"data":income, "form": form,})
+    # return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+
+      results = GetDriverTripsData(form.cleaned_data['from_date'],form.cleaned_data['until_date'],select_columns,pivot_def)
+    return render(request, self.template_name,{"data":results['data'],"stats":results['stats'], 'sums':results['sums'],'totals':results['totals'],"form": form,})    
 
 class DriversPaymentReport(View):
   template_name = 'DriversPaymentReport.html'
   def get(self, request, *args, **kwargs):
-    form = MonthYearSelector()
+    #form = MonthYearSelector()
+    form = DateSelector()
     # Get initial dates
-    start_dates = initialize_dates()
+    start_dates = initialize_dates(-6)
+    #print start_dates
     start_date = start_dates[0]
     end_date = start_dates[1]
     # Define columns to Retrive
     select_columns = ['date','phone_number','total_payment']
     # Define Pivot definition
     pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'total_payment'}
-    # Get data
-    income = GetDriverTripsData(end_date.year,end_date.month,select_columns,pivot_def)
-    stats = GetDriverTripStats(end_date.year,end_date.month,select_columns,pivot_def)
-   
-    #print income
-    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+    # Get Initial Data
+    results = GetDriverTripsData(start_date,end_date,select_columns,pivot_def)
+
+    return render(request, self.template_name,{"data":results['data'],"stats":results['stats'], 'sums':results['sums'],'totals':results['totals'],"form": form,})
 
   def post(self, request, *args, **kwargs):
-    form = MonthYearSelector(request.POST)
+    form = DateSelector(request.POST)
     select_columns = ['date','phone_number','total_payment']
     pivot_def ={'index': 'date', 'columns': 'phone_number', 'values':'total_payment'}    
     if form.is_valid():
-      income = GetDriverTripsData(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
-      stats = GetDriverTripStats(form.cleaned_data['report_year'],form.cleaned_data['report_month'],select_columns,pivot_def)
-    #return render(request, self.template_name,{"data":income, "form": form,})
-    return render(request, self.template_name,{"data":income,"stats":stats, "form": form,})
+      results = GetDriverTripsData(form.cleaned_data['from_date'],form.cleaned_data['until_date'],select_columns,pivot_def)
+
+    return render(request, self.template_name,{"data":results['data'],"stats":results['stats'], 'sums':results['sums'],'totals':results['totals'],"form": form,})
 
 # Get data from 
-def GetDriverTripsData(year,month,select_columns,pivot_def):
+def GetDriverTripsData(ini_date,end_date,select_columns,pivot_def):
   #template_name = 'dashbord.html'
   # Define QuerySet:
-  qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(year=year,month=month)
+  #qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(year=year,month=month)
+  qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(date__range=[ini_date,end_date])
   print qs.count()
   if qs.count() != 0:
     # Read DataFranme and select columns to use
@@ -184,44 +197,41 @@ def GetDriverTripsData(year,month,select_columns,pivot_def):
     #df = df.pivot(index='date',columns='phone_number',values='viajes')
     df = df.pivot(index=pivot_def['index'],columns=pivot_def['columns'],values=pivot_def['values'])
     # Convert nan to 0
-    df1 = df.fillna(value=0)
-    #df2 = df.describe()
+    data = df.fillna(value=0)
+    # Sum columns
+    #sums = df.groupby('date').aggregate(np.sum)
+    sums = data.apply(np.cumsum)
+    sums = sums.fillna(value=0)
     # Get Statistics
     df2 = df.describe()
-    print df.describe()
-    #print df2
-    # Convert DataFrame to json
-    json_data = df1.to_json(orient="split")  
-    return TranslateJSONResults(json_data,'Date')
+    stats = df2.fillna(value=0)
+    # print "************ stats"
+    # print stats
+    # print "************ sums"
+    # print sums
+    # print "************ data"
+    # print data
+    json_data = data.to_json(orient="split")
+    json_sums = sums.to_json(orient="split")
+    json_stat = stats.to_json(orient="split")
+
+
+    return {
+          'data':TranslateJSONResults(json_data,'Date'),
+          'sums':TranslateJSONResults(json_sums,'Date'),
+          'stats':TranslateJSONResults(json_stat,'Indicador'),
+          'totals':ResultsTotals(TranslateJSONResults(json_sums,'Date'),'Totals')
+          }
   else:
     print date.today()
     null_data = [['Date','No Data'],[str(date.today()),'0']]
-    return null_data
-
-# Get Stats from data
-def GetDriverTripStats(year,month,select_columns,pivot_def):
-  # Define Queryset
-  qs = VMyCarsIncomeByDriverYearMonthWeek.objects.filter(year=year,month=month)
-  print qs.count()
-  if qs.count() != 0:
-    # Read DataFranme and select columns to use
-    #df = read_frame(qs,fieldnames=['date','phone_number','viajes'])
-    df = read_frame(qs,fieldnames=select_columns)
-    # Pivot data
-    #df = df.pivot(index='date',columns='phone_number',values='viajes')
-    df = df.pivot(index=pivot_def['index'],columns=pivot_def['columns'],values=pivot_def['values'])
-    # Convert nan to 0
-    df1 = df.fillna(value=0)
-    #df2 = df.describe()
-    # Get Statistics
-    df2 = df.describe()
-    df2 = df2.fillna(value=0)
-    stat_json = df2.to_json(orient="split")
-    print stat_json
-    return TranslateJSONResults(stat_json,'Indicador')
-  else:
-      null_data = [['Indicador','No Data'],[str(date.today()),'0']]
-      return null_data  
+    return {
+          'data': null_data,
+          'sums': null_data,
+          'stats': null_data,
+          'totals': null_data,
+    }
+ 
      
 # Convert json data to list
 def TranslateJSONResults(json_data,extra_column):
@@ -243,6 +253,31 @@ def TranslateJSONResults(json_data,extra_column):
   # Return list 
   return merged_data
 
+def ResultsTotals(sums,extra_column):
+  # print sums
+  # print len(sums)
+  # print sums[0]
+  # print sums[len(sums)-1]
+  row_elements = sums[len(sums)-1]
+  header = sums[0]
+  header.append('Total')
+  header[0]= 'Period Total'
+  #print header
+  total = 0
+  for i,column in enumerate(row_elements):
+    # print i
+    # print column
+    if i != 0:
+      total += column
+  #print total
+  row_elements.append(total)
+  #print row_elements
+  results = []
+  results.append(header)
+  results.append(row_elements)
+  print results
+  
+  return results
 
 
 

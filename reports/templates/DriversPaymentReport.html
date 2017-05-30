@@ -66,6 +66,27 @@
       <div id='ovvw_table_div' class=""> </div>
     </div>
   </div>  
+
+  <div class="row row-content">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <div id='ovvw_chart_div_2' class=""> </div>
+    </div>
+  </div>
+
+  <div class="row row-content">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <div id='ovvw_table_div_2' class=""> </div>
+    </div>
+  </div>  
+
+  <div class="row row-content">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <div id='ovvw_chart_div_3' class=""> </div>
+    </div>
+  </div>
 </div>
 
 
@@ -82,7 +103,13 @@
     );
     var data1 = google.visualization.arrayToDataTable(
       {{stats|safe}}
-    );    
+    ); 
+    var data2 = google.visualization.arrayToDataTable(
+      {{sums|safe}}
+    ); 
+    var data3 = google.visualization.arrayToDataTable(
+      {{totals|safe}}
+    );           
 
     var options = {
               //title: 'Company Performance',
@@ -170,6 +197,16 @@
 
     var table = new google.visualization.Table(document.getElementById('ovvw_table_div_1'));
         table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+
+    var chart = new google.charts.Line(document.getElementById('ovvw_chart_div_2'));
+        chart.draw(data2, google.charts.Line.convertOptions(options));  
+
+    var table = new google.visualization.Table(document.getElementById('ovvw_table_div_2'));
+        table.draw(data2, {showRowNumber: true, width: '100%', height: '100%'});
+
+    var materialChart = new google.charts.Bar(document.getElementById('ovvw_chart_div_3'));
+        materialChart.draw(data3, google.charts.Bar.convertOptions(materialOptions)); 
+
 }
    
 </script>
